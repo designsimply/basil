@@ -1,0 +1,40 @@
+version: '3.1'
+
+services:
+
+  ## App server connects to the database and provides an API for frontend
+  app:
+    build: ./app/.
+    volumes:
+      - ./app:/opt/app
+    depends_on:
+      - postgres
+    links:
+      - postgres
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - 8000:8000
+    environment:
+      # CONFIG_FILES: 'base.yaml:local_settings.yaml'
+      DJANGO_DEBUG: 'true'
+      DJANGO__DATABASES__default__DB: stuffdb
+      DJANGO__DATABASES__default__USER: basil
+      DJANGO__DATABASES__default__PASSWORD: EJ60FsNzLrijzwO1rCw
+
+
+  # # ## Primary data store for application data
+  postgres:
+    image: postgres:10.3    
+    # volumes:
+    #   - ./postgres/scripts:/opt/scripts
+    # postgres uses port 5432 by default and exposing it to
+    # the docker network using `postgres:5432`
+    expose:
+      - "5432"
+    environment:
+      # TODO: change this password, currently checked into git
+      POSTGRES_PASSWORD: EJ60FsNzLrijzwO1rCw
+      POSTGRES_USER: basil
+      POSTGRES_DB: stuffdb
+      # Comment these lines to persist data on the local filesystem.
+      # PGDATA: /opt/postgresql/data
