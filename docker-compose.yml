@@ -16,7 +16,7 @@ services:
       - 8000:8000
     environment:
       # CONFIG_FILES: 'base.yaml:local_settings.yaml'
-      DJANGO_DEBUG: 'true'
+      DJANGO__DEBUG: 'true'
       DJANGO__DATABASES__default__DB: stuffdb
       DJANGO__DATABASES__default__USER: basil
       DJANGO__DATABASES__default__PASSWORD: EJ60FsNzLrijzwO1rCw
