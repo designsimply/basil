@@ -14,6 +14,7 @@ docker helper commands
 app helper commands
 	bash       	Start a bash shell in the server
 	shell		Start a django shell
+	manage		Run python manage.py <arguments> in a new container
 
 postgres helper commands
 	psql 		Start psql shell in a running container
@@ -57,7 +58,7 @@ up)
 	;;
 
 # ---------------------------------------------------------------------------- #
-# server helper commands
+# app helper commands
 
 bash)
 	docker-compose exec app bash
@@ -67,6 +68,12 @@ bash)
 
 shell)
 	docker-compose exec app python manage.py shell
+	exit
+	;;
+
+
+manage)
+	docker-compose run app python manage.py ${@:2}
 	exit
 	;;
 
