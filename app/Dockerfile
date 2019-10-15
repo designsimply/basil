@@ -10,4 +10,4 @@ RUN pip install -U pip
 RUN pip install -r requirements.txt
 RUN pip freeze
 
-ENV PYTHONPATH '/opt/app/modules:/usr/local/lib/python3.7/site-packages'
+ENV PYTHONPATH '/opt/app:/opt/app/app:/usr/local/lib/python3.7/site-packages'

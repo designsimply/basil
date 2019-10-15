@@ -27,15 +27,15 @@ import yaml
 # ############################################################################ #
 
 
-# /opt/app/src
-SRC_DIR = os.path.dirname(
+# /opt/app/
+BASE_DIR = os.path.dirname(
     os.path.dirname(
         __file__
     )
 )
 
 # /opt/app
-BASE_DIR = os.path.dirname(SRC_DIR)
+APP_DIR = os.path.join(BASE_DIR, 'app')
 
 
 # ############################################################################ #
@@ -84,6 +84,9 @@ def get_config(config_path, config_files):
             config[key] = []
 
     return config
+
+
+_config = get_config(CONFIG_PATH, CONFIG_FILES)
 
 
 # ############################################################################ #
@@ -155,6 +158,7 @@ def recursive_load_from_env(config, key_list=None):
             recursive_load_from_env(value, key_list + [i])
 
 
-_config = get_config(CONFIG_PATH, CONFIG_FILES)
 recursive_load_from_env(_config)
+
+# add all _config to the globals of this module
 globals().update(_config)
