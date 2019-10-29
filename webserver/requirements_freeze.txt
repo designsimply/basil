@@ -12,7 +12,6 @@ psycopg2==2.8.3
 ptyprocess==0.6.0
 Pygments==2.4.2
 pytz==2019.3
-PyYAML==5.1.2
 six==1.12.0
 sqlparse==0.3.0
 traitlets==4.3.3
