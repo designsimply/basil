@@ -204,13 +204,14 @@ def _recursive_load_from_env(config, key_list=None):
         value = config
     else:
         key = key_list[-1]
-        value = config[key]
 
-    env_name = '__'.join(['DJANGO'] + [str(k) for k in key_list])
-    if env_name in os.environ:
-        print(f'found env key {env_name}')
-        config[key] = _get_env(env_name)
-        return config
+        env_name = '__'.join(['DJANGO'] + [str(k) for k in key_list])
+        if env_name in os.environ:
+            print(f'found env key {env_name}')
+            config[key] = _get_env(env_name)
+            return config
+
+        value = config[key]
 
     if isinstance(value, dict):
         for nested_key in value:
