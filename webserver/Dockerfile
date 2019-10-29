@@ -1,7 +1,6 @@
 FROM python:3
 
 WORKDIR /opt/webserver
-COPY . .
 
 ENV PYTHONUNBUFFERED 1
 
@@ -9,5 +8,7 @@ ENV PYTHONUNBUFFERED 1
 RUN pip install -U pip
 RUN pip install -r requirements.txt
 RUN pip freeze
+
+COPY . .
 
 ENV PYTHONPATH '/opt/webserver:/opt/webserver/apps:/usr/local/lib/python3.7/site-packages'
