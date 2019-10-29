@@ -1,13 +1,8 @@
-from django.http import HttpResponse
+from django.shortcuts import render
 
 
 def helloworld(request):
-    return HttpResponse("Hello sheri!")
-
-
-# from django.shortcuts import render
-# def helloworld(request):
-#     context = {
-#         'var1': 'sheri',
-#     }
-#     return render(request, 'helloworld/index.html', context)
+    context = {
+        'var1': 'Variables!',
+    }
+    return render(request, 'helloworld/index.html', context)
