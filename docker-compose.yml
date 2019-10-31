@@ -1,10 +1,13 @@
-version: '3.1'
+version: '3.3'
 
 services:
 
   ## App server connects to the database and provides an API for frontend
   webserver:
-    build: ./webserver/.
+    image: basil_webserver:dev # name:tag 
+    build: 
+      context: ./webserver/.
+      dockerfile: Dockerfile-dev
     volumes:
       - ./webserver:/opt/webserver
     depends_on:
@@ -20,9 +23,9 @@ services:
       DJANGO__DATABASES__default__PASSWORD: EJ60FsNzLrijzwO1rCw
 
 
-  # # ## Primary data store for application data
+  ## Primary data store for application data
   postgres:
-    image: postgres:10.3    
+    image: postgres:10.3 
     # volumes:
     #   - ./postgres/scripts:/opt/scripts
     # postgres uses port 5432 by default and exposing it to
