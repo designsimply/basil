@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>See the links!!!</h1>
+
+
+{% for link in links %}
+<div>
+	<i>Title:</i> {{ link.title }}<br>
+
+	<i>Link:</i> <a href={{ link.url }}>{{ link.url }}</a><br>
+
+	<i>Description:</i> {{ link.description }}<br>
+	<br>
+
+</div>
+{% endfor %}
+
+
+{% endblock %}
+
