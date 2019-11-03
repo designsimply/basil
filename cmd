@@ -1,4 +1,7 @@
 #!env bash
+echo $0
+
+PROJECT_DIR=$(dirname "$(readlink "$0")")
 
 usage="usage: $(basename "$0") <command> 
 
@@ -100,6 +103,31 @@ pg_scripts)
 	exit
 	;;
 
+
+pg_backup)
+	# TODO: parameterize path
+	outdir_host=${PROJECT_DIR}'/postgres/untracked_backups'
+ 	outdir_docker='/mnt/backups'
+
+	if [ ! -d "$outdir_host" ]; then
+	  # Control will enter here if $DIRECTORY doesn't exist.
+	  echo "Creating backup directory $outdir_host"
+	  mkdir $outdir_host
+	fi	
+
+	# pgdump_2019-10-09T21:02:26.backup
+	now=$(date +'%Y-%m-%dT%H:%M:%S')
+	fn='pg_dump_'$now'.backup'
+	echo "Backup file: $fn"
+
+	fp=${outdir_docker}'/'${fn}
+	echo "Backup filepath: $fp"
+
+	psql_cmd='pg_dump -U $POSTGRES_USER -d $POSTGRES_DB > '$fp
+	docker-compose exec postgres bash -c "$psql_cmd"
+
+	exit
+	;;
 
 # ---------------------------------------------------------------------------- #
 # defaults
