@@ -1,17 +1,31 @@
 <!DOCTYPE html>
-<html lang="en-US">
+<html class="no-js" lang="">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="theme-color" content="#fafafa">
+
   <title>
   	{% block title %}Title{% endblock %}
   </title>
-  <meta name="Description" content="" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- <link rel="manifest" href="site.webmanifest"> -->
+  <!-- <link rel="apple-touch-icon" href="icon.png"> -->
+  <!-- Place favicon.ico in the root directory -->
+  <!-- <link rel="stylesheet" href="css/normalize.css"> -->
+  <!-- <link rel="stylesheet" href="css/main.css"> -->
+
+
   <!-- <link rel="stylesheet" type="text/css" href="/org/css/styles.css" /> -->
 </head>
 
 <body>
+  <!--[if IE]>
+    <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+  <![endif]-->	
 {% block content %}
 {% endblock %}
+
 </body>
 </html>
