@@ -12,13 +12,19 @@ path by running or adding the following to a rc file:
 	export PATH=\"\$PATH:$PROJECT_DIR\"
 
 
+helper commands 
+	
+	alias 		Create useful aliases in your terminal
+
 docker helper commands 
+
 	up   		Wrapper for docker-compose up
 	run 		Wrapper for docker-compose run
 	exec  		Wrapper for docker-compose exec
 	quickstart	Build and initialize the project 	
 
 web helper commands
+
 	bash       	Start a bash shell in the server
 	shell		Start a django shell
 	manage.py	Run python manage.py <arguments> in a new container
@@ -26,6 +32,7 @@ web helper commands
 	deleteuser 	Delete a user. Args: username
 
 postgres helper commands
+
 	psql 		Start psql shell in a running container
 	pg_scripts	Execute scripts in ./postgresql/scripts/
 	pg_backup	Create a backup file of postgres data
@@ -42,6 +49,11 @@ cd $PROJECT_DIR
 # Take the input command
 
 case "$1" in
+
+alias)
+	source $PROJECT_DIR/.aliases
+	echo "Created Aliases $PROJECT_DIR/.aliases"
+	;;
 
 # ---------------------------------------------------------------------------- #
 # docker helper commands 
