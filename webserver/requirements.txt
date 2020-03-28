@@ -1,10 +1,5 @@
 # Django Web Framework
-Django==2.2.6
+Django
 
-
-# Database connections
-psycopg2==2.8.3
-
-
-# For development 
-ipython==7.8.0
+# for postgres database connections
+psycopg2
