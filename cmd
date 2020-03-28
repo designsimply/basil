@@ -1,18 +1,19 @@
 #!env bash
-echo $0
 
-PROJECT_DIR=$(dirname "$(readlink "$0")")
+PROJECT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-usage="usage: $(basename "$0") <command> 
+usage="usage: $(basename "$0") command [args]
 
 
-This script helps with simple command shortcuts
+This script helps with simple command shortcuts. You can add this to your 
+path by running or adding the following to a rc file:
 
-general helper commands 
-	link_me		Link this cmd to /usr/local/bin/cmd
+
+	export PATH=\"\$PATH:$PROJECT_DIR\"
+
 
 docker helper commands 
-	up          Wrapper for docker-compose up
+	up   		Wrapper for docker-compose up
 	run 		Wrapper for docker-compose run
 	exec  		Wrapper for docker-compose exec
 	quickstart	Build and initialize the project 	
@@ -22,7 +23,7 @@ web helper commands
 	shell		Start a django shell
 	manage.py	Run python manage.py <arguments> in a new container
 	createuser 	Create a user. Args: username password [is_staff|is_superuser]
-	deleteuser  Delete a user. Args: username
+	deleteuser 	Delete a user. Args: username
 
 postgres helper commands
 	psql 		Start psql shell in a running container
@@ -31,37 +32,16 @@ postgres helper commands
 
 "
 
+
+# Commands here work within the context of this directory. This should 
+# temporarily navigate you to the project dir during the script.
+cd $PROJECT_DIR
+
+
 # ---------------------------------------------------------------------------- #
 # Take the input command
 
 case "$1" in
-
-commandlist)
-	echo up run exec quickstart bash shell manage.py psql pg_scripts pg_backup
-	;;
-
-# ---------------------------------------------------------------------------- #
-# docker helper commands 
-link_me)
-	# get path to this file
-	DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-	cmd_source=${DIR}/cmd 
-
-	# get path to directory
-	if [ -z ${VIRTUAL_ENV+x} ]; 
-		then 
-			echo "Not in virtualenv"; 
-			exit;
-	fi
-	echo ${VIRTUAL_ENV};
-	bin_path=${VIRTUAL_ENV}/bin;
-	cmd_destination=${bin_path}/cmd
-	
-	ln -s $cmd_source $cmd_destination
-
-	echo "created symlink $cmd_destination to point at $cmd_source"
-	exit
-	;;
 
 # ---------------------------------------------------------------------------- #
 # docker helper commands 
@@ -183,3 +163,5 @@ pg_backup)
 	;;
 
 esac
+
+echo "done!"
