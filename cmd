@@ -116,12 +116,12 @@ manage.py)
 	;;
 
 createuser)
-	$PROJECT_DIR/script/dev/create_user.sh ${@:2}
+	$PROJECT_DIR/scripts/dev/create_user.sh ${@:2}
 	exit
 	;;
 
 deleteuser)
-	$PROJECT_DIR/script/dev/delete_user.sh ${@:2}
+	$PROJECT_DIR/scripts/dev/delete_user.sh ${@:2}
 	exit
 	;;
 
