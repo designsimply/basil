@@ -1,1 +1,1 @@
-from webserver.settings.base import *
+from basil.settings.base import *

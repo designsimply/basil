@@ -1,7 +1,11 @@
 """ Tools for settings.
 
-These are currently, but it's an interesting idea. Basically it allows
-the ability to overwriting any variable in the settings using
+
+!!! CURRENTLY NOT USED !!!
+
+The ability to overwrite any variable seems like overkill and a
+simpler way is just to have those explicitly added in the code. Basically it 
+allows the ability to overwriting any variable in the settings using
 an environment variable.
 
 To implement
@@ -10,11 +14,19 @@ To implement
 globals().update(recursive_load_from_env(globals()))
 ```
 
+config based on yaml with ability to overwrite in environment
 
-!!! CURRENTLY NOT USED !!!
 
-The ability to overwrite any variable seems like overkill and a
-simpler way is just to have those explicitly added in the code.
+CONFIG_PATH = ./config/
+
+CONFIG_FILES = 'base.yaml'
+
+Then it loads ./config/base.yaml
+
+Which is a nested dictionary. Then it loads from the environment based on
+nested keys.
+
+DJANGO__level1_key__level2_key: value
 
 
 """

@@ -25,7 +25,7 @@
         "level": "DEBUG"
     },
     "loggers": {
-        "webserver": {
+        "basil": {
             "handlers": ["console"],
             "level": "DEBUG"
         }

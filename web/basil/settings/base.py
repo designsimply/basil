@@ -1,20 +1,4 @@
 """ Settings module, uses a different paradigm from django
-
-config based on yaml with ability to overwrite in environment
-
-
-CONFIG_PATH = ./config/
-
-CONFIG_FILES = 'base.yaml'
-
-Then it loads ./config/base.yaml
-
-Which is a nested dictionary. Then it loads from the environment based on
-nested keys.
-
-DJANGO__level1_key__level2_key: value
-
-
 """
 
 import os
@@ -78,7 +62,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'config.urls'
+ROOT_URLCONF = 'basil.urls'
 
 TEMPLATES = [
     {
@@ -99,7 +83,7 @@ TEMPLATES = [
 ]
 
 
-WSGI_APPLICATION = 'config.wsgi.application'
+WSGI_APPLICATION = 'basil.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
@@ -147,7 +131,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # Logging
-#
 
-with open(os.environ['DJANGO_LOGGING_CONFIG']) as _:
+with open(os.path.join(BASE_DIR, os.environ['DJANGO_LOGGING_CONFIG'])) as _:
     logging.config.dictConfig(json.load(_))
