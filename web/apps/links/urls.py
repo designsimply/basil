@@ -4,5 +4,5 @@ from links import views
 
 urlpatterns = [
     path('', views.links_view),
-    path('/json', views.links_json)
+    path('json', views.links_json)
 ]
