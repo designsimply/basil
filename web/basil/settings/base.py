@@ -18,6 +18,8 @@ DJANGO__level1_key__level2_key: value
 """
 
 import os
+import json
+import logging.config
 
 # ############################################################################ #
 #
@@ -26,15 +28,17 @@ import os
 # ############################################################################ #
 
 
-# /opt/app/
+# /code/
 BASE_DIR = os.path.dirname(
     os.path.dirname(
-        __file__
+        os.path.dirname(
+            __file__
+        )
     )
 )
 
-# /opt/app
-APP_DIR = os.path.join(BASE_DIR, 'app')
+# /code/apps
+APPS_DIR = os.path.join(BASE_DIR, 'apps')
 
 
 # ############################################################################ #
@@ -43,14 +47,10 @@ APP_DIR = os.path.join(BASE_DIR, 'app')
 #
 # ############################################################################ #
 
-
-# OVERWRITE SETTINGS USING
-#
-# ENV DJANGO__<name>_
-#
+SERVICE_ENVIRONMENT = os.environ['SERVICE_ENVIRONMENT']
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '*)s9o+=wjhxn1*1+_ssymqh@rrp#ylko6=9&en*5_enblgy)g5'
+SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -80,14 +80,12 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'config.urls'
 
-
-TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'APP_DIRS': True,
         'DIRS': [
-            TEMPLATE_DIR
+            os.path.join(BASE_DIR, 'templates')
         ],
         'OPTIONS': {
             'context_processors': [
@@ -105,13 +103,14 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
+
 DATABASES = {
-  'default': {
+    'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'stuffdb',
-        'USER': 'basil',
-        'PASSWORD': 'DJANGO__DATABASES__default__PASSWORD',
-        'HOST': 'postgres',
+        'HOST': os.environ['POSTGRES_HOST'],
+        'NAME': os.environ['POSTGRES_DB'],
+        'USER': os.environ['POSTGRES_USER'],
+        'PASSWORD': os.environ['POSTGRES_PASSWORD'],
         'PORT': '5432',
     }
 }
@@ -147,89 +146,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-
-# ############################################################################ #
+# Logging
 #
-# Load environment variables
-#
-# ############################################################################ #
 
-
-def _get_env(setting):
-    """ Read an environment file and load.
-
-    """
-    value = os.environ[setting]
-
-    # Boolean values
-    if value.lower() == 'true':
-        return True
-    elif value.lower() == 'false':
-        return False
-
-    # floats
-    if '.' in value:
-        try:
-            return float(value)
-        except ValueError:
-            pass
-
-    # integers
-    try:
-        return int(value)
-    except ValueError:
-        pass
-
-    # list
-    if ':' in value:
-        return value.split(':')
-
-    # string
-    return value
-
-
-def _recursive_load_from_env(config, key_list=None):
-    """ Load from the environment
-
-    ENV DJANGO__key1___0___key2: True
-
-    This will update config['key1'][0]['key2'] = True
-
-    Parameters
-        config (dict): nested dict of variables
-        key_list (list): recursive keys
-
-    """
-    if key_list is None:
-        key_list = []
-        value = config
-    else:
-        key = key_list[-1]
-
-        env_name = '__'.join(['DJANGO'] + [str(k) for k in key_list])
-        if env_name in os.environ:
-            print(f'found env key {env_name}')
-            config[key] = _get_env(env_name)
-            return config
-
-        value = config[key]
-
-    if isinstance(value, dict):
-        for nested_key in value:
-            if isinstance(nested_key, str) and nested_key.startswith('_'):
-                continue
-            _recursive_load_from_env(value, key_list + [nested_key])
-        return value
-    elif isinstance(value, list):
-        for i in range(len(value)):
-            _recursive_load_from_env(value, key_list + [i])
-        return value
-
-    else:
-        # t = type(value)
-        # raise TypeError(f'Invalid type {t} with {value}')
-        return config
-
-
-# add all _config to the globals of this module
-globals().update(_recursive_load_from_env(globals()))
+with open(os.environ['DJANGO_LOGGING_CONFIG']) as _:
+    logging.config.dictConfig(json.load(_))

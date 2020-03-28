@@ -1,3 +1,5 @@
+# Project
+local.py
 untracked_*
 
 # Byte-compiled / optimized / DLL files
@@ -84,7 +86,6 @@ celerybeat-schedule
 *.sage.py
 
 # Environments
-.env
 .venv
 env/
 venv/
