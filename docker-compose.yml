@@ -22,7 +22,7 @@ services:
     environment:
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
       DJANGO_SETTINGS_MODULE: config.settings
-      
+
       # CONFIG_FILES: 'base.yaml:local_settings.yaml'
       DJANGO__DEBUG: 'true'
       DJANGO__DATABASES__default__DB: ${POSTGRES_DB}
@@ -32,7 +32,7 @@ services:
 
   ## Primary data store for application data
   db:
-    build: postgres/.
+    build: database/.
     restart: always
     expose:
       - 5432
