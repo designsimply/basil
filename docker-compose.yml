@@ -1,5 +1,8 @@
 version: '3.3'
 
+volumes:
+  data-postgres:
+
 services:
 
   ## App server connects to the database and provides an API for frontend
@@ -11,33 +14,32 @@ services:
     volumes:
       - ./webserver:/opt/webserver
     depends_on:
-      - postgres
+      - db
     command: python manage.py runserver 0.0.0.0:8000
     ports:
       - 8000:8000
     environment:
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
       # CONFIG_FILES: 'base.yaml:local_settings.yaml'
       DJANGO__DEBUG: 'true'
-      DJANGO__DATABASES__default__DB: stuffdb
-      DJANGO__DATABASES__default__USER: basil
-      DJANGO__DATABASES__default__PASSWORD: EJ60FsNzLrijzwO1rCw
-
+      DJANGO__DATABASES__default__DB: ${POSTGRES_DB}
+      DJANGO__DATABASES__default__USER: ${POSTGRES_USER}
+      DJANGO__DATABASES__default__PASSWORD: ${POSTGRES_PASSWORD}
+      DJANGO__DATABASES__default__HOST: db
 
   ## Primary data store for application data
-  postgres:
-    image: postgres:10.3 
-    # volumes:
-    #   - ./postgres/scripts:/opt/scripts
-    # postgres uses port 5432 by default and exposing it to
-    # the docker network using `postgres:5432`
+  db:
+    build: postgres/.
+    restart: always
     expose:
-      - "5432"
+      - 5432
     volumes:
-      - ./postgres/untracked_backups:/mnt/backups
+      # Named volume is not necessary for this, can mount to the system
+      # See "Where to Store Data" in https://hub.docker.com/_/postgres
+      - data-postgres:/var/lib/postgresql/data      
     environment:
-      # TODO: change this password, currently checked into git
-      POSTGRES_PASSWORD: EJ60FsNzLrijzwO1rCw
-      POSTGRES_USER: basil
-      POSTGRES_DB: stuffdb
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: ${POSTGRES_DB}
       # Comment these lines to persist data on the local filesystem.
       # PGDATA: /opt/postgresql/data
