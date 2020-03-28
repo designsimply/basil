@@ -1,21 +1,29 @@
 FROM python:3
 
+# local, dev, stage, or prod
+ARG SERVICE_ENVIRONMENT=local 
+ENV SERVICE_ENVIRONMENT ${SERVICE_ENVIRONMENT}
+
+# ########################################################################### #
+# Build Django Project
+# ########################################################################### #
 ENV PYTHONUNBUFFERED 1
-ENV PYTHONPATH '/opt/webserver:/opt/webserver/apps:/usr/local/lib/python3.7/site-packages'
+ENV PYTHONPATH "/code:/code/apps:$PYTHONPATH"
+ENV PATH "/code/bin:$PATH"
 
-WORKDIR /opt/webserver
+WORKDIR /code/bin
 
-RUN pip install -U pip
+COPY bin/pip_install_requirements.sh .
+
+WORKDIR /code
+
+# Python Requirements
 COPY requirements.txt .
 COPY requirements_freeze.txt .
+RUN pip_install_requirements.sh requirements.txt requirements_freeze.txt
 
-# # for dev environment
-# RUN pip install -r requirements.txt
-# RUN pip freeze
-# RUN pip freeze > /tmp/updated_requirements_freeze.txt
-# RUN diff /tmp/updated_requirements_freeze.txt requirements_freeze.txt
-
-# for stage & prod environment
-RUN pip install -r requirements_freeze.txt
-
+# copy all code over
 COPY . .
+
+EXPOSE 8000
+CMD ["runserver.sh"]

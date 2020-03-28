@@ -8,18 +8,21 @@ services:
   ## App server connects to the database and provides an API for frontend
   webserver:
     image: basil_webserver:dev # name:tag 
+    # https://docs.docker.com/compose/django/
     build: 
-      context: ./webserver/.
-      dockerfile: Dockerfile-dev
+      context: webserver/.      
+      args:
+        SERVICE_ENVIRONMENT: local # local, dev, stage, prod
     volumes:
-      - ./webserver:/opt/webserver
+      - ./webserver:/code
     depends_on:
       - db
-    command: python manage.py runserver 0.0.0.0:8000
     ports:
-      - 8000:8000
+      - 8000:8000 # host:docker
     environment:
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
+      DJANGO_SETTINGS_MODULE: config.settings
+      
       # CONFIG_FILES: 'base.yaml:local_settings.yaml'
       DJANGO__DEBUG: 'true'
       DJANGO__DATABASES__default__DB: ${POSTGRES_DB}
