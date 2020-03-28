@@ -83,7 +83,8 @@ exec)
 quickstart):
 	docker-compose build
 	docker-compose run --rm web manage.py migrate
-	# ./webserver/scripts/create_user.sh me password123
+	echo 'WARNING: creating admin user. Should probably delete.'
+	$PROJECT_DIR/script/dev/create_user.sh admin admin is_superuser
 	docker-compose up
 	exit 
 	;;
@@ -104,12 +105,12 @@ shell)
 
 
 manage.py)
-	docker-compose exec webserver manage.py ${@:2} 2> /dev/null
+	docker-compose exec web manage.py ${@:2} 2> /dev/null
 	exitcode=$?
 	if [[ $exitcode == 1 ]]
 	then
-		echo "No container webserver found, executing with 'run'"
-		docker-compose run --rm webserver manage.py ${@:2}
+		echo "No container web found, executing with 'run'"
+		docker-compose run --rm web manage.py ${@:2}
 	fi
 	exit
 	;;
