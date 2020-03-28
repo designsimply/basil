@@ -14,7 +14,7 @@ general helper commands
 docker helper commands 
 	up          Wrapper for docker-compose up
 
-webserver helper commands
+web helper commands
 	bash       	Start a bash shell in the server
 	shell		Start a django shell
 	manage		Run python manage.py <arguments> in a new container
@@ -61,22 +61,22 @@ up)
 	;;
 
 # ---------------------------------------------------------------------------- #
-# webserver helper commands
+# web helper commands
 
 bash)
-	docker-compose exec webserver bash
+	docker-compose exec web bash
 	exit
 	;;
 
 
 shell)
-	docker-compose exec webserver python manage.py shell
+	docker-compose exec web python manage.py shell
 	exit
 	;;
 
 
 manage)
-	docker-compose run webserver python manage.py ${@:2}
+	docker-compose run web python manage.py ${@:2}
 	exit
 	;;
 

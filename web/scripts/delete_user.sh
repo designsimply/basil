@@ -8,7 +8,7 @@ then
 	exit 1
 fi
 
-docker-compose exec webserver \
+docker-compose exec web \
 	django-admin shell \
 	--command="from django.contrib.auth.models import User; User.objects.get(username='${username}').delete()"
 exitcode=$?

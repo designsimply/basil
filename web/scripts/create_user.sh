@@ -22,7 +22,7 @@ else
 	is_superuser='False'
 fi
 
-docker-compose exec webserver \
+docker-compose exec web \
 	django-admin shell \
 	--command="from django.contrib.auth.models import User; user=User(username='${username}', is_staff=${is_staff}, is_superuser=${is_superuser}); user.set_password('${password}'); user.save()"
 exitcode=$?
