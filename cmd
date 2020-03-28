@@ -47,17 +47,14 @@ case "$1" in
 # docker helper commands 
 up)
 	docker-compose up --remove-orphans --no-recreate ${@:2}
-	exit 
 	;;
 
 run)
 	docker-compose run --rm ${@:2}
-	exit
 	;;
 
 exec)
 	docker-compose exec ${@:2}
-	exit 
 	;;
 
 quickstart):
@@ -66,7 +63,6 @@ quickstart):
 	echo 'WARNING: creating admin user. Should probably delete.'
 	$PROJECT_DIR/script/dev/create_user.sh admin admin is_superuser
 	docker-compose up
-	exit 
 	;;
 
 # ---------------------------------------------------------------------------- #
@@ -74,13 +70,11 @@ quickstart):
 
 bash)
 	docker-compose exec web bash
-	exit
 	;;
 
 
 shell)
 	docker-compose exec web python manage.py shell
-	exit
 	;;
 
 
@@ -92,25 +86,21 @@ manage.py)
 		echo "No container web found, executing with 'run'"
 		docker-compose run --rm web manage.py ${@:2}
 	fi
-	exit
 	;;
 
 createuser)
 	$PROJECT_DIR/scripts/dev/create_user.sh ${@:2}
-	exit
 	;;
 
 deleteuser)
 	$PROJECT_DIR/scripts/dev/delete_user.sh ${@:2}
-	exit
 	;;
 
 # ---------------------------------------------------------------------------- #
 # postgres helper commands
 
 psql)
-    docker-compose exec postgres bash -c 'psql -U $POSTGRES_USER -d $POSTGRES_DB'
-    exit	    
+    docker-compose exec db bash -c 'psql -U $POSTGRES_USER -d $POSTGRES_DB'
 	;;
 
 
@@ -125,7 +115,6 @@ pg_scripts)
 	    docker-compose exec postgres bash -c "$psql_cmd"
 
 	done		
-	exit
 	;;
 
 
@@ -150,8 +139,6 @@ pg_backup)
 
 	psql_cmd='pg_dump -U $POSTGRES_USER -d $POSTGRES_DB > '$fp
 	docker-compose exec postgres bash -c "$psql_cmd"
-
-	exit
 	;;
 
 # ---------------------------------------------------------------------------- #
@@ -163,5 +150,3 @@ pg_backup)
 	;;
 
 esac
-
-echo "done!"
