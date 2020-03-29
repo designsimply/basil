@@ -86,7 +86,7 @@ bash)
 
 
 shell)
-	docker-compose exec web python manage.py shell
+	docker-compose exec web manage.py shell
 	;;
 
 
