@@ -7,7 +7,7 @@ from links import models
 
 
 def links_view(request):
-    links = models.Link.objects.all()
+    links = models.Link.objects.all()[:100]
     context = {
         'links': links,
     }
