@@ -1,11 +1,12 @@
 from django.db import models
 
-from common import TimestampMixin
+from common import TimestampMixin, URLTextField
 
 
 class Link(TimestampMixin, models.Model):
-    url = models.URLField(
+    url = URLTextField(
         help_text="URL of the link we care about.",
+        null=True,  # NULL are notes
     )
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
@@ -16,7 +17,7 @@ class Link(TimestampMixin, models.Model):
 
 
 class Tag(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     links = models.ManyToManyField('Link', through='LinkTag')
 
     def __str__(self):
