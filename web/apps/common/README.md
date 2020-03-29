@@ -1,0 +1,1 @@
+Common utilities used within apps but not an app itself (i.e. no models or views)
