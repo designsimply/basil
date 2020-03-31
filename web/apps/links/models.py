@@ -15,6 +15,11 @@ class Link(TimestampMixin, models.Model):
     def __str__(self):
         return f'{self.title}'
 
+    def tags_name(self):
+        return tuple(
+            v[0] for v in self.tags.values_list('name')
+        )
+
 
 class Tag(models.Model):
     name = models.CharField(max_length=255, unique=True)
