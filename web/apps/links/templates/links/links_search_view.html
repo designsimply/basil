@@ -3,7 +3,20 @@
 {% block content %}
 <h1>See the links!!!</h1>
 
+<div>
+	<p>SEARCH BAR:</p>
+</div>
+<div>
+	GET PARAMETERS: {{ kws }}
+</div>
+<div>
+	SHOWING {{ links_meta.start }} - {{ links_meta.end}} of {{ links_meta.total }}
+</div>
 
+
+<br>
+<br>
+<br>
 {% for link in links %}
 <div>
 	<i>Title:</i> {{ link.title }}<br>
@@ -11,7 +24,7 @@
 	<i>Link:</i> <a href={{ link.url }}>{{ link.url }}</a><br>
 
 	<i>Description:</i> {{ link.description }}<br>
-
+	<i>Tags:</i> {{ link.tags_name }} <br>
 	<i>Created:</i> {{ link.created_at }}<br>
 	<i>Updated:</i> {{ link.updated_at }}<br>
 

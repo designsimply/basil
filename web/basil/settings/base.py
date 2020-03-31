@@ -129,6 +129,11 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+# API
+
+MAX_PER_PAGE = 50
+
+
 # Logging
 
 with open(os.path.join(BASE_DIR, os.environ['DJANGO_LOGGING_CONFIG'])) as _:

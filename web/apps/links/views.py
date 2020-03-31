@@ -2,16 +2,90 @@ from django.shortcuts import render
 
 from django.core import serializers
 from django.http import HttpResponse
+from django.conf import settings
 
 from links import models
 
 
-def links_view(request):
-    links = models.Link.objects.all()[:100]
+def paginate_queryset(queryset, page=0, per_page=settings.MAX_PER_PAGE):
+    """ add limit and offset to queryset
+
+    Parameters
+    ----------
+    queryset : django queryset
+    page : int
+        which page, none sets to page=0
+    per_page : int
+        number to display per page
+
+    Returns
+    -------
+    int
+        number total from the queryset before slice
+    django queryset
+        subset of the queryset
+
+    """
+    per_page = min(per_page, settings.MAX_PER_PAGE)
+    per_page = max(per_page, 1)
+
+    total = queryset.count()
+    max_pages = (total // per_page)
+
+    page = max(page, 0)
+    page = min(page, max_pages)
+
+    start = (page) * per_page
+    end = min((page + 1) * per_page, total)
+
+    queryset = queryset[start:end]
+    return (total, start, end, queryset)
+
+
+def links_search_view(request):
+
+    queryset = models.Link.objects.all()
+
+    get_params = dict(request.GET)
+
+    query_parts = get_params.pop('q', [])
+    if len(query_parts):
+        query = ' '.join(query_parts)
+        queryset = queryset.filter(title__icontains=query)
+
+    per_page = get_params.pop('per_page', [])
+    if len(per_page):
+        try:
+            per_page = int(per_page[0])
+        except ValueError:
+            per_page = settings.MAX_PER_PAGE
+    else:
+        per_page = settings.MAX_PER_PAGE
+
+    page_1 = get_params.pop('page', [])
+    if len(page_1):
+        try:
+            page_0 = int(page_1[0]) - 1
+        except ValueError:
+            page_0 = 0
+    else:
+        page_0 = 0
+
+    total, start, end, queryset = paginate_queryset(
+        queryset, page=page_0, per_page=per_page)
+
+    # TODO: If unknown GET parameters are passed, just ignore them.
+
     context = {
-        'links': links,
+        'links': queryset,
+        'links_meta': {
+            'total': total,
+            'start': start,
+            'end': end,
+        },
+        'kws': dict(request.GET),
     }
-    return render(request, 'links/links_view.html', context)
+    return render(request, 'links/links_search_view.html', context)
 
 
 def links_json(request):
