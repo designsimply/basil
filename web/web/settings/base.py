@@ -62,7 +62,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'basil.urls'
+ROOT_URLCONF = 'web.urls'
 
 _TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 TEMPLATES = [
@@ -84,7 +84,7 @@ TEMPLATES = [
 ]
 
 
-WSGI_APPLICATION = 'basil.wsgi.application'
+WSGI_APPLICATION = 'web.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases

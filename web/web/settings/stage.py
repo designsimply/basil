@@ -1,4 +1,4 @@
-from basil.settings.base import *
+from web.settings.base import *
 
 assert SERVICE_ENVIRONMENT == 'stage', SERVICE_ENVIRONMENT
 
