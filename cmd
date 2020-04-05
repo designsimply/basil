@@ -36,8 +36,8 @@ web helper commands
 postgres helper commands
 
 	psql 		Start psql shell in a running container
-	pg_scripts	Execute scripts in ./postgresql/scripts/
-	pg_backup	Create a backup file of postgres data
+	backup		Create a backup file of postgres data. Usage: cmd pg_backup
+	restore		Restore from backup. Usage: cmd pg_restore database/untracked_backups/<filename>
 
 "
 
@@ -96,6 +96,13 @@ quickstart):
 	docker-compose exec web bash -c 'scripts/create_user.sh admin admin superuser 2> /dev/null'
 
 	echo '----------------------------'
+	echo 'Restore Database'
+	echo '----------------------------'
+	echo 'INFORMATION ONLY'
+	echo 'restore database using the following command if you have a backup'
+	echo 'cmd restore database/untracked_backups/<filename>'
+
+	echo '----------------------------'
 	echo 'Collectstatic'
 	echo '----------------------------'	
 	docker-compose exec web manage.py collectstatic --no-input
@@ -148,6 +155,8 @@ psql)
 
 
 pg_scripts)
+	echo 'NOT IMPLEMENTED'
+	exit 1
 	FILES=postgres/scripts/*
 	for fp in $FILES
 	do
@@ -161,28 +170,83 @@ pg_scripts)
 	;;
 
 
-pg_backup)
-	# TODO: parameterize path
-	outdir_host=${PROJECT_DIR}'/postgres/untracked_backups'
- 	outdir_docker='/mnt/backups'
+backup)
+	echo '-----------------------'
+	echo 'Postgres Backup'
+	echo '-----------------------'
 
-	if [ ! -d "$outdir_host" ]; then
+	out_dir_host=${PROJECT_DIR}'/database/untracked_backups'
+ 	out_dir_guest='/mnt/backups'
+
+	if [ ! -d "$out_dir_host" ]; then
 	  # Control will enter here if $DIRECTORY doesn't exist.
-	  echo "Creating backup directory $outdir_host"
-	  mkdir $outdir_host
+	  echo "Creating backup directory $out_dir_host"
+	  mkdir $out_dir_host
 	fi	
 
-	# pgdump_2019-10-09T21:02:26.backup
-	now=$(date +'%Y-%m-%dT%H:%M:%S')
-	fn='pg_dump_'$now'.backup'
-	echo "Backup file: $fn"
+	out_filename=$(basename $2)
+	if [[ "$out_filename" == "" ]] # not provided
+	then 
+		# pgdump_2019-10-09T21:02:26.backup
+		now=$(date +'%Y-%m-%dT%H:%M:%S')
+		out_filename='pg_dump_'$now'.backup'
+	fi
+	echo "Backup file: $out_filename"
 
-	fp=${outdir_docker}'/'${fn}
-	echo "Backup filepath: $fp"
+	out_filepath_guest=${out_dir_guest}/${out_filename}
+	echo "Backup filepath: $out_filepath_guest"
 
-	psql_cmd='pg_dump -U $POSTGRES_USER -d $POSTGRES_DB > '$fp
-	docker-compose exec postgres bash -c "$psql_cmd"
+	name='basil_db_1'
+	started_db=false
+	if [[ "$(docker ps -f "name=$name" --format '{{.Names}}')" == "" ]]
+	then
+		started_db=true
+		docker-compose up -d db
+	fi
+
+	# https://mkyong.com/database/backup-restore-database-in-postgresql-pg_dumppg_restore/
+	psql_cmd='pg_dump -U $POSTGRES_USER -d $POSTGRES_DB --clean --blobs --verbose --format=c --file='$out_filepath_guest	
+	docker-compose exec db bash -c "$psql_cmd"
+
+	if [[ $started_db ]]
+	then
+		docker-compose stop db
+	fi
 	;;
+
+restore)
+	echo '-----------------------'
+	echo 'Postgres Restore'
+	echo '-----------------------'
+
+	in_dir_host=${PROJECT_DIR}'/database/untracked_backups'
+	in_dir_guest='/mnt/backups'
+
+	in_filepath_host=$2
+	in_filename=$(basename $2)
+	in_filepath_guest=${in_dir_guest}/$in_filename
+
+	echo "Backup file: $in_filename"
+	echo "Backup host location: $in_filepath_host"
+	echo "Backup guest location: $in_filepath_guest"
+
+	name='basil_db_1'
+	started_db=false
+	if [[ "$(docker ps -f "name=$name" --format '{{.Names}}')" == "" ]]
+	then
+		started_db=true
+		docker-compose up -d db
+	fi
+
+	psql_cmd='pg_restore -U $POSTGRES_USER -d $POSTGRES_DB --verbose '$in_filepath_guest	
+	docker-compose exec db bash -c "$psql_cmd"
+
+	if [[ $started_db ]]
+	then
+		docker-compose stop db
+	fi
+	;;
+
 
 # ---------------------------------------------------------------------------- #
 # defaults
