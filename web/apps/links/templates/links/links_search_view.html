@@ -1,38 +1,127 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
-<h1>See the links!!!</h1>
 
-<div>
-	<p>SEARCH BAR:</p>
-</div>
-<div>
-	GET PARAMETERS: {{ kws }}
-</div>
-<div>
-	SHOWING {{ links_meta.start }} - {{ links_meta.end}} of {{ links_meta.total }}
-</div>
+	<header class="page-header text-center">
+	<div class="overlay"></div>
+	<div class="container">
+	  <div class="row">
+	    <div class="col-xl-9 mx-auto">
+	      <h1 class="mb-5">A tiny empire of links!</h1>
+	    </div>
+	    
+	    <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
+	      <form id="linksSearchForm" method="GET">
+			    <input id="linksSearchFormPage" type="hidden" name="page" value="1"/>	   
+			    <input id="linksSearchFormS" type="hidden" name="s" value=""/>
+			       	
+	        <div class="form-row">
+	          <div class="col-12 col-md-9 mb-2 mb-md-0">
+	            <input id="linksSearchFormText" type="text" class="form-control form-control-lg" placeholder="Search terms...">
+	          </div>
+	          <div class="col-12 col-md-2 ">
+	            <button type="submit" class="btn btn-block btn-lg btn-primary" onclick="linksSearchSubmit()">
+	            	<i class="fa fa-search"></i>
+	           	</button>
+	          </div>
+	        </div>
+	        <div class="form-row mt-2 mb-2">
+	          <div class="col-10 col-lg-4 ">
+							RESULTS {{ links_meta.start }} - {{ links_meta.end}} of {{ links_meta.total }}
+						</div>	        	
+	          <div class="col-10 col-sm-1 ">
+	            <button id="linksSearchSubmitPreviousId" type="submit" class="btn btn-block btn-sm btn-default" onclick="linksSearchSubmitPrevious()" hidden="">
+	            	<i class="fa fa-chevron-circle-left"></i>		          	
+		          </button>
+						</div>
+	          <div class="col-10 col-sm-1 ">
+	            <button id="linksSearchSubmitNextId" type="submit" class="btn btn-block btn-sm btn-default" onclick="linksSearchSubmitNext()" hidden="">
+	            	<i class="fa fa-chevron-circle-right"></i>
+		          </button>
+						</div>
+
+	        </div>        
+	      </form>
+	    </div>
+	  </div>
+	  <div class="row text-center">
+	  </div>
+
+	  {% if debug %}  
+		<div class="container m-5" hidden="">
+ 			<div class="border border-info rounded">
+				<div class="panel panel-info  alert-info">
+				  <div class="panel-heading">
+				    <h3 class="panel-title">DEBUG</h3>
+				  </div>
+			  	<ul class="list-group text-left">
+			  		{% for key, value in debug.items %}
+					    <li class="list-group-item border-0">
+					    	debug.{{ key }}: {{ value }}
+					    </li>
+				    {% endfor %}
+				  </ul>
+				 </div>
+			</div>
+		</div>
+	  {% endif %}
+	</div>
+	</header>
+
+	<div class="container m-5">
+		<div class="card-deck">
+			{% for link in links %}
+			{% if forloop.counter0|divisibleby:2 %}
+	        <div class="w-100 d-none d-sm-block d-md-none"><!-- wrap every 2 on sm--></div>
+			{% endif %}
+
+			{% if forloop.counter0|divisibleby:3 %}
+	        <div class="w-100 d-none d-md-block d-lg-none"><!-- wrap every 3 on md--></div>
+			{% endif %}
+			{% if forloop.counter0|divisibleby:4 %}
+	        <div class="w-100 d-none d-lg-block d-xl-none"><!-- wrap every 4 on lg--></div>
+			{% endif %}		
+			{% if forloop.counter0|divisibleby:5 %}
+	        <div class="w-100 d-none d-xl-block"><!-- wrap every 5 on xl--></div>
+			{% endif %}	
+		  <div class="card m-1">
+		    <div class="card-body">
+		      <div class="card-title">
+		      	{% if link.url %}
+			      	<a href={{ link.url }}>{{ link.title }}</a>
+		      	{% else %}
+		      		{{ link.title }}
+		      	{% endif %}
+		      </div>
+			  	<ul class="list-group card-text">
+						<li class="list-group-item border-0">Tags: {{ link.tags_name }} </li>			  		
+						<li class="list-group-item border-0">Description: {{ link.description }}</li>
+						<li class="list-group-item border-0 text-muted">Created: {{ link.created_at }}</li>
+						<li class="list-group-item border-0 text-muted">Updated: {{ link.updated_at }}</li>
+					</ul>
+		    </div>
+		  </div>
+		  
+		  {% endfor %}
+		</div>
+	</div>
+
+{% endblock %}
 
 
-<br>
-<br>
-<br>
-{% for link in links %}
-<div>
-	<i>Title:</i> {{ link.title }}<br>
+{% block js %}
 
-	<i>Link:</i> <a href={{ link.url }}>{{ link.url }}</a><br>
-
-	<i>Description:</i> {{ link.description }}<br>
-	<i>Tags:</i> {{ link.tags_name }} <br>
-	<i>Created:</i> {{ link.created_at }}<br>
-	<i>Updated:</i> {{ link.updated_at }}<br>
-
-	<br>
-
-</div>
-{% endfor %}
-
+<script type="text/javascript">
+console.log(window.location.href);
+let linksSearchState = {
+	'page': {{ links_meta.page }},
+	'start': {{ links_meta.start }},
+	'end': {{ links_meta.end }},
+	'total': {{ links_meta.total }},
+}
+</script>
+<script src="{% static "links/js/links_search_view.js" %}"></script>
 
 {% endblock %}
 
