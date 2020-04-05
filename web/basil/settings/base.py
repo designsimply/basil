@@ -2,8 +2,6 @@
 """
 
 import os
-import json
-import logging.config
 
 # ############################################################################ #
 #
@@ -144,5 +142,38 @@ MAX_PER_PAGE = 50
 
 # Logging
 
-with open(os.path.join(BASE_DIR, os.environ['DJANGO_LOGGING_CONFIG'])) as _:
-    logging.config.dictConfig(json.load(_))
+LOGGING_LEVEL = os.environ.get('DJANGO_LOGGING_LEVEL', 'DEBUG')
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': (
+                '{asctime} {process} {module:10}:L{lineno} '
+                '{levelname:8} \n {message}'
+            ),
+            'style': '{'
+        },
+        'default': {
+            'format': '{levelname} | {message}',
+            'style': '{'
+        }
+    },
+    'handlers': {
+        'console': {
+            'level': LOGGING_LEVEL,
+            'class': 'logging.StreamHandler',
+            'formatter': 'default',
+        }
+    },
+    'root': {
+        'level': LOGGING_LEVEL,
+        'handlers': ['console']
+    },
+    'loggers': {
+        'webserver': {
+            'handlers': ['console'],
+            'level': LOGGING_LEVEL,
+        }
+    }
+}

@@ -21,7 +21,6 @@ services:
       - 8000:8000 # host:docker
     environment:
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
-      DJANGO_LOGGING_CONFIG: basil/logging/dev.json
       DJANGO_SETTINGS_MODULE: basil.settings.local
       DJANGO_DEBUG: 'true'
       # database parameters
