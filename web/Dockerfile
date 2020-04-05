@@ -8,7 +8,7 @@ ENV SERVICE_ENVIRONMENT ${SERVICE_ENVIRONMENT}
 # Build Django Project
 # ########################################################################### #
 ENV PYTHONUNBUFFERED 1
-ENV PYTHONPATH "/code:/code/apps:$PYTHONPATH"
+ENV PYTHONPATH "/code:/code/basil:$PYTHONPATH"
 ENV PATH "/code/bin:$PATH"
 
 WORKDIR /code/bin
