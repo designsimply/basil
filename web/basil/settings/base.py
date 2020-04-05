@@ -63,12 +63,13 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'basil.urls'
 
+_TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'APP_DIRS': True,
         'DIRS': [
-            os.path.join(BASE_DIR, 'templates')
+            _TEMPLATES_DIR,
         ],
         'OPTIONS': {
             'context_processors': [
@@ -127,7 +128,14 @@ USE_L10N = True
 
 USE_TZ = True
 
+# Static Content
+# https://docs.djangoproject.com/en/3.0/ref/settings/#static-files
+
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'untracked_static')
+STATICFILES_DIRS = [
+    os.path.join(_TEMPLATES_DIR, 'static'),
+]
 
 # API
 

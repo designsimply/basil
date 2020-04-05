@@ -1,31 +1,59 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html class="no-js" lang="">
-<head>
-  <meta charset="utf-8">
-  <meta name="description" content="">
-  <meta name="theme-color" content="#fafafa">
+  <head>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="theme-color" content="#fafafa">
 
-  <title>
-  	{% block title %}Title{% endblock %}
-  </title>
+    <title>
+    	{% block title %}
+      Title
+      {% endblock %}
+    </title>
 
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- <link rel="manifest" href="site.webmanifest"> -->
-  <!-- <link rel="apple-touch-icon" href="icon.png"> -->
-  <!-- Place favicon.ico in the root directory -->
-  <!-- <link rel="stylesheet" href="css/normalize.css"> -->
-  <!-- <link rel="stylesheet" href="css/main.css"> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- <link rel="manifest" href="site.webmanifest"> -->
+    <!-- <link rel="apple-touch-icon" href="icon.png"> -->
+    <!-- Place favicon.ico in the root directory -->
 
+    {% block base_css %}
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static "vendor/bootstrap/css/bootstrap.min.css" %}">
 
-  <!-- <link rel="stylesheet" type="text/css" href="/org/css/styles.css" /> -->
-</head>
+    <!-- Custom fonts for this template -->
+    <link rel="stylesheet" type="text/css" href="{% static "vendor/fontawesome-free/css/all.min.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "vendor/simple-line-icons/css/simple-line-icons.css" %}">
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic">
+    {% endblock %}
 
-<body>
-  <!--[if IE]>
-    <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
-  <![endif]-->	
-{% block content %}
-{% endblock %}
+    {% block css %}
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" type="text/css" href="{% static "css/landing-page.min.css" %}">
+    {% endblock %}
 
-</body>
+  </head>
+
+  <body>
+    <!--[if IE]>
+      <div class="alert alert-warning" role="alert">
+        You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.
+      </div>
+    <![endif]-->	
+
+    {% block content %}
+    {% endblock %}
+
+    <!-- SCRIPTS -->
+    {% block base_js %}
+      <script src="{% static "vendor/jquery/jquery.min.js" %}"></script>
+      <script src="{% static "vendor/bootstrap/js/bootstrap.bundle.min.js" %}"></script>
+    {% endblock %}
+
+    {% block js %}
+
+    {% endblock %}
+
+  </body>
 </html>
