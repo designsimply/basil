@@ -48,6 +48,7 @@ def paginate_queryset(queryset, page=0, per_page=settings.MAX_PER_PAGE):
 
 
 def links_search_view(request):
+    SEARCH_RANK_THRESHOLD = 0.3
     logger.info('SEARCH!')
     queryset = models.Link.objects.all()
 
@@ -57,7 +58,7 @@ def links_search_view(request):
     query_parts = get_params.pop('s', [])
     if len(query_parts):
         query = '%20'.join(query_parts)
-        if query != 'null':
+        if query != 'null' and query != '':
             search_query = SearchQuery(urllib.parse.unquote(query))
             search_vector = (
                 SearchVector('title', weight='A')
@@ -66,7 +67,7 @@ def links_search_view(request):
             queryset = (
                 queryset
                 .annotate(rank=SearchRank(search_vector, search_query))
-                .filter(rank__gte=0.3)
+                .filter(rank__gte=SEARCH_RANK_THRESHOLD)
                 .order_by('rank')
             )
 
