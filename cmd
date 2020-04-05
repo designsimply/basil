@@ -72,13 +72,40 @@ exec)
 	;;
 
 quickstart):
-	set +e
+	echo '----------------------------'
+	echo 'Build Images'
+	echo '----------------------------'
 	docker-compose build
-	docker-compose run --rm web manage.py migrate
-	docker-compose run --rm web manage.py collectstatic --no-input -c
+
+	echo '----------------------------'
+	echo 'Start Images'
+	echo '----------------------------'
+	docker-compose up -d web
+	# wait for started
+	docker-compose exec web wait_for_database.sh
+
+	echo '----------------------------'
+	echo 'Run Migrations'
+	echo '----------------------------'
+	docker-compose exec web manage.py migrate
+
+	echo '----------------------------'
+	echo 'Create Admin User'
+	echo '----------------------------'
 	echo 'WARNING: creating admin user. Should probably delete.'
-	$PROJECT_DIR/script/dev/create_user.sh admin admin superuser
-	docker-compose up
+	docker-compose exec web bash -c 'scripts/create_user.sh admin admin superuser 2> /dev/null'
+
+	echo '----------------------------'
+	echo 'Collectstatic'
+	echo '----------------------------'	
+	docker-compose exec web manage.py collectstatic --no-input
+
+	echo '----------------------------'
+	echo 'Restart Images Attached'
+	echo '----------------------------'	
+	docker-compose stop web
+	docker-compose up web
+
 	;;
 
 # ---------------------------------------------------------------------------- #
@@ -105,11 +132,11 @@ manage.py)
 	;;
 
 createuser)
-	$PROJECT_DIR/scripts/dev/create_user.sh ${@:2}
+	docker-compose exec web scripts/create_user.sh ${@:2}
 	;;
 
 deleteuser)
-	$PROJECT_DIR/scripts/dev/delete_user.sh ${@:2}
+	docker-compose exec web scripts/delete_user.sh ${@:2}
 	;;
 
 # ---------------------------------------------------------------------------- #
