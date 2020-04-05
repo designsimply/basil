@@ -14,7 +14,7 @@ A `cmd` script is used for helpful shortcuts during development. But should not 
 
 1. Install [Docker](https://docs.docker.com/docker-for-mac/install/) and 
 	[docker-compose](https://docs.docker.com/compose/install/).
-1. Run `cmd quickstart`
+1. Run `./cmd quickstart`
 1. Go to [localhost:8000](http://localhost:8000) to view!
 
 
@@ -22,11 +22,13 @@ A `cmd` script is used for helpful shortcuts during development. But should not 
 
 1. Install [Docker](https://docs.docker.com/docker-for-mac/install/) and 
 	[docker-compose](https://docs.docker.com/compose/install/).
-1. Build docker iamges `docker-compose build`
+1. Run `git clone git@github.com:designsimply/basil.git`
+1. Run `cp web/web/settings/dev.py web/web/settings/local.py`
+1. Build docker images `docker-compose build`
 1. Start containers `docker-compose up web`
-1. Open new terminal shell
+1. Open new terminal shell.
 1. Run database migrations `docker-compose exec web manage.py migrate`
-1. (optional) Run database restore with backup file `cmd restore database/untracked_backups/<backup_file>`
+1. (optional) Run database restore with backup file `./cmd restore database/untracked_backups/<backup_file>`
 1. (optional) Create a user in database. Shortcut: `docker-compose exec web scripts/create_user.sh admin admin superuser` (note: you will want to delete this user before production)
 1. Collect static files. `docker-compose exec web manage.py collectstatic --no-input`
 1. Go to [localhost:8000](http://localhost:8000) to view!
@@ -61,5 +63,3 @@ A `cmd` script is used for helpful shortcuts during development. But should not 
 * **cmd** : bash script with helpful shortcuts for development
 * **docker-compose.yml** : docker-compose config for services
 * **LICENSE** : project license
-
-
