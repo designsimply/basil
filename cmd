@@ -1,5 +1,7 @@
 #!env bash
 
+set -e
+
 PROJECT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 usage="usage: $(basename "$0") command [args]
@@ -70,10 +72,12 @@ exec)
 	;;
 
 quickstart):
+	set +e
 	docker-compose build
 	docker-compose run --rm web manage.py migrate
+	docker-compose run --rm web manage.py collectstatic --no-input -c
 	echo 'WARNING: creating admin user. Should probably delete.'
-	$PROJECT_DIR/script/dev/create_user.sh admin admin is_superuser
+	$PROJECT_DIR/script/dev/create_user.sh admin admin superuser
 	docker-compose up
 	;;
 
