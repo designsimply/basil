@@ -2,7 +2,7 @@ import logging
 import urllib
 
 from django.shortcuts import render
-
+from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 from django.core import serializers
 from django.http import HttpResponse
 from django.conf import settings
@@ -58,8 +58,17 @@ def links_search_view(request):
     if len(query_parts):
         query = '%20'.join(query_parts)
         if query != 'null':
-            query = urllib.parse.unquote(query)
-            queryset = queryset.filter(title__icontains=query)
+            search_query = SearchQuery(urllib.parse.unquote(query))
+            search_vector = (
+                SearchVector('title', weight='A')
+                + SearchVector('description', weight='B')
+            )
+            queryset = (
+                queryset
+                .annotate(rank=SearchRank(search_vector, search_query))
+                .filter(rank__gte=0.3)
+                .order_by('rank')
+            )
 
     per_page = get_params.pop('per_page', [])
     if len(per_page):
