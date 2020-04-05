@@ -1,3 +1,6 @@
+import logging
+import urllib
+
 from django.shortcuts import render
 
 from django.core import serializers
@@ -5,6 +8,8 @@ from django.http import HttpResponse
 from django.conf import settings
 
 from links import models
+
+logger = logging.getLogger(__name__)
 
 
 def paginate_queryset(queryset, page=0, per_page=settings.MAX_PER_PAGE):
@@ -43,15 +48,18 @@ def paginate_queryset(queryset, page=0, per_page=settings.MAX_PER_PAGE):
 
 
 def links_search_view(request):
-
+    logger.info('SEARCH!')
     queryset = models.Link.objects.all()
 
     get_params = dict(request.GET)
 
-    query_parts = get_params.pop('q', [])
+    query = ''
+    query_parts = get_params.pop('s', [])
     if len(query_parts):
-        query = ' '.join(query_parts)
-        queryset = queryset.filter(title__icontains=query)
+        query = '%20'.join(query_parts)
+        if query != 'null':
+            query = urllib.parse.unquote(query)
+            queryset = queryset.filter(title__icontains=query)
 
     per_page = get_params.pop('per_page', [])
     if len(per_page):
@@ -79,12 +87,21 @@ def links_search_view(request):
     context = {
         'links': queryset,
         'links_meta': {
+            'page': page_0 + 1,
             'total': total,
             'start': start,
             'end': end,
         },
-        'kws': dict(request.GET),
     }
+
+    if settings.DEBUG:
+        context['debug'] = {
+            'get': dict(request.GET),
+            'post': dict(request.POST),
+            'path': request.path,
+            'query': query,
+        }
+
     return render(request, 'links/links_search_view.html', context)
 
 
