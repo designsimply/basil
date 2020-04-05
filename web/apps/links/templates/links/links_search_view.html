@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{% static "links/css/links_search_view.css" %}">
+{% endblock %}
+
+
 {% block content %}
 
 	<header class="page-header text-center">
@@ -49,7 +54,7 @@
 	  </div>
 
 	  {% if debug %}  
-		<div class="container m-5" hidden="">
+		<div class="container m-5">
  			<div class="border border-info rounded">
 				<div class="panel panel-info  alert-info">
 				  <div class="panel-heading">
